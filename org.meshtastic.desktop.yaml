@@ -29,6 +29,11 @@ finish-args:
   - --env=JAVA_HOME=/app/jre
 
 modules:
+  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
+  # - shared-modules/libayatana-appindicator/libayatana-appindicator-gtk3.json
+  - shared-modules/libcanberra/libcanberra.json
+  - shared-modules/dbus-glib/dbus-glib.json
+
   # Jetbrains Runtime (JBR) JRE must be used for proper window scaling, font rendering, etc.
   - name: jbr
     buildsystem: simple
@@ -46,7 +51,6 @@ modules:
         sha256: 02124d01591c173f9a51ef84d99ce248900d4d1e1aa52a38c65f4708f66b6e98
         only-arches:
           - aarch64
-  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
 
   - name: meshtastic-wrapper
     buildsystem: simple
