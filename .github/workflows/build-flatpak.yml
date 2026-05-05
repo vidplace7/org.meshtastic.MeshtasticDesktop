@@ -6,7 +6,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+      fail-fast: true
     steps:
         - uses: actions/checkout@v6
           with:
@@ -20,10 +24,12 @@ jobs:
             flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
             flatpak-builder --user --repo=repo --install-deps-from=flathub --force-clean builddir org.meshtastic.desktop.yaml
         - name: Export .flatpak bundle
+          env:
+            ARCH: ${{ matrix.arch }}
           run: |
-            flatpak build-bundle repo org.meshtastic.desktop.flatpak org.meshtastic.desktop --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+            flatpak build-bundle repo org.meshtastic.desktop.${ARCH}.flatpak org.meshtastic.desktop --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
         - name: Upload .flatpak
           uses: actions/upload-artifact@v7
           with:
-            name: meshtastic-desktop-flatpak
-            path: org.meshtastic.desktop.flatpak
+            name: meshtastic-desktop-flatpak-${{ matrix.arch }}
+            path: org.meshtastic.desktop.${{ matrix.arch }}.flatpak
