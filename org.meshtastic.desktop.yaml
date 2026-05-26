@@ -13,7 +13,7 @@ finish-args:
   - --socket=x11
   # Enable Hardware Accel
   - --device=dri
-  # Required for CH341 USB radio
+  # Required for USB Serial support
   - --device=all
   # Needs network access
   - --share=network
