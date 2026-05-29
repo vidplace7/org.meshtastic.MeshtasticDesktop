@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Meshtastic Desktop
-Comment=Meshtastic App
-Exec=meshtastic-wrapper.sh
-Icon=org.meshtastic.desktop
-Terminal=true
-Type=Application
-Categories=Network;Chat;HamRadio;
