@@ -68,15 +68,17 @@ modules:
       # Use local gradle zip
       - sed -i 's|distributionUrl=.*|distributionUrl=gradle-all.zip|' gradle/wrapper/gradle-wrapper.properties
       # Install desktop metadata
-      - install -Dm644 -t /app/share/icons/hicolor/scalable/apps org.meshtastic.desktop.svg
-      - install -Dm644 -t /app/share/applications org.meshtastic.desktop.desktop
-      - install -Dm644 -t /app/share/metainfo org.meshtastic.desktop.metainfo.xml
+      - install -Dm644 desktopApp/packaging/icons/icon.svg /app/share/icons/hicolor/scalable/apps/org.meshtastic.desktop.svg
+      - install -Dm644 -t /app/share/applications desktopApp/packaging/linux/org.meshtastic.desktop.desktop
+      - desktop-file-edit --set-key="Exec" --set-value="meshtastic-wrapper.sh %U"
+        /app/share/applications/org.meshtastic.desktop.desktop
+      - install -Dm644 -t /app/share/metainfo desktopApp/packaging/linux/org.meshtastic.desktop.metainfo.xml
       # Disable Gradle's auto-download and auto-detect of Java installations
       - echo "org.gradle.java.installations.auto-detect=false" >> gradle.properties
       - echo "org.gradle.java.installations.auto-download=false" >> gradle.properties
       - echo "org.gradle.java.installations.paths=/usr/lib/sdk/openjdk21/jvm/openjdk-21,/usr/lib/sdk/openjdk17/jvm/openjdk-17" >> gradle.properties
-      # Disable develocity
-      - sed -i '/develocity/d' settings.gradle.kts build-logic/settings.gradle.kts
+      # # Disable develocity
+      # - sed -i '/develocity/d' settings.gradle.kts build-logic/settings.gradle.kts
       # Comment out the toolchainVendor=JETBRAINS line in the Gradle daemon JVM properties
       # as it causes Gradle to fail when running with OpenJDK
       - >
@@ -89,16 +91,10 @@ modules:
         JAR_FILE=$(find desktopApp/build/compose/jars/ -name "*.jar" -type f | head -1)
         && install -Dm755 "$JAR_FILE" /app/lib/meshtastic-desktop.jar
     sources:
-      - type: file
-        path: org.meshtastic.desktop.desktop
-      - type: file
-        path: org.meshtastic.desktop.metainfo.xml
-      - type: file
-        path: org.meshtastic.desktop.svg
       - type: git
         url: https://github.com/meshtastic/Meshtastic-Android.git
-        tag: v2.7.14-internal.108
-        commit: e5a2e8c06305f92d44209b7ae14cd6e217194df1
+        tag: v2.7.14-open.14
+        commit: f2ac9ef10f7bef5050663701b65d618a13b2cc88
         x-checker-data:
           is-main-source: true
           type: json
