@@ -69,7 +69,7 @@ modules:
       # Use local gradle zip
       - sed -i 's|distributionUrl=.*|distributionUrl=gradle-all.zip|' gradle/wrapper/gradle-wrapper.properties
       # Install desktop metadata
-      - install -Dm644 desktopApp/packaging/icons/icon.svg /app/share/icons/hicolor/scalable/apps/org.meshtastic.desktop.svg
+      - install -Dm644 desktopApp/packaging/icons/icon_round.svg /app/share/icons/hicolor/scalable/apps/org.meshtastic.desktop.svg
       - install -Dm644 -t /app/share/applications desktopApp/packaging/linux/org.meshtastic.desktop.desktop
       - desktop-file-edit --set-key="Exec" --set-value="meshtastic-wrapper.sh %U"
         /app/share/applications/org.meshtastic.desktop.desktop
