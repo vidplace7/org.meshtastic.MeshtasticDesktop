@@ -46,7 +46,6 @@ modules:
         sha256: 02124d01591c173f9a51ef84d99ce248900d4d1e1aa52a38c65f4708f66b6e98
         only-arches:
           - aarch64
-  - shared-modules/libappindicator/libappindicator-gtk3-12.10.json
 
   - name: meshtastic-wrapper
     buildsystem: simple
