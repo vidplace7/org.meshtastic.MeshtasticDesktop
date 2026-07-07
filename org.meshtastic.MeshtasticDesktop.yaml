@@ -1,4 +1,4 @@
-id: org.meshtastic.desktop
+id: org.meshtastic.MeshtasticDesktop
 runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
@@ -66,12 +66,17 @@ modules:
       # Use local gradle zip
       - sed -i 's|distributionUrl=.*|distributionUrl=gradle-all.zip|' gradle/wrapper/gradle-wrapper.properties
       # Install desktop metadata
-      - install -Dm644 desktopApp/packaging/icons/icon_round.svg /app/share/icons/hicolor/scalable/apps/org.meshtastic.desktop.svg
-      - install -Dm644 -t /app/share/applications desktopApp/packaging/linux/org.meshtastic.desktop.desktop
+      - install -Dm644 desktopApp/packaging/icons/icon_round.svg /app/share/icons/hicolor/scalable/apps/org.meshtastic.MeshtasticDesktop.svg
+      - install -Dm644 desktopApp/packaging/linux/org.meshtastic.desktop.desktop /app/share/applications/org.meshtastic.MeshtasticDesktop.desktop
       - desktop-file-edit --set-key="Exec" --set-value="meshtastic-wrapper.sh %U"
-        /app/share/applications/org.meshtastic.desktop.desktop
-      - install -Dm644 org.meshtastic.desktop.metainfo.xml /app/share/metainfo/org.meshtastic.desktop.metainfo.xml
-      # - install -Dm644 -t /app/share/metainfo desktopApp/packaging/linux/org.meshtastic.desktop.metainfo.xml
+        /app/share/applications/org.meshtastic.MeshtasticDesktop.desktop
+      # Rename the icon from "org.meshtastic.desktop" to "org.meshtastic.MeshtasticDesktop".
+      # Fixed in v2.8.0 (remove during upgrade).
+      - desktop-file-edit --set-key="Icon" --set-value="org.meshtastic.MeshtasticDesktop"
+        /app/share/applications/org.meshtastic.MeshtasticDesktop.desktop
+      # Use local metainfo.xml until the v2.8.0 release (remove during upgrade).
+      - install -Dm644 org.meshtastic.MeshtasticDesktop.metainfo.xml /app/share/metainfo/org.meshtastic.MeshtasticDesktop.metainfo.xml
+      # - install -Dm644 -t /app/share/metainfo desktopApp/packaging/linux/org.meshtastic.MeshtasticDesktop.metainfo.xml
       # Disable Gradle's auto-download and auto-detect of Java installations
       - echo "org.gradle.java.installations.auto-detect=false" >> gradle.properties
       - echo "org.gradle.java.installations.auto-download=false" >> gradle.properties
@@ -115,4 +120,4 @@ modules:
       # The file in-repo is incomplete (missing screenshots) at v2.7.14 tag.
       # Fixed in v2.8.0 (remove during upgrade).
       - type: file
-        path: org.meshtastic.desktop.metainfo.xml
+        path: org.meshtastic.MeshtasticDesktop.metainfo.xml

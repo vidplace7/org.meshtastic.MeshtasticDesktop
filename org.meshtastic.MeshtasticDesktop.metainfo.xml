@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.meshtastic.desktop</id>
+  <id>org.meshtastic.MeshtasticDesktop</id>
 
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -26,7 +26,7 @@
     </p>
   </description>
 
-  <launchable type="desktop-id">org.meshtastic.desktop.desktop</launchable>
+  <launchable type="desktop-id">org.meshtastic.MeshtasticDesktop.desktop</launchable>
 
   <developer id="org.meshtastic">
     <name>Meshtastic LLC</name>
@@ -91,7 +91,7 @@
   </screenshots>
 
   <releases>
-    <release version="2.7.14" date="2025-05-01">
+    <release version="2.7.14" date="2025-06-03">
       <description>
         <p>Initial release of Meshtastic Desktop.</p>
       </description>
