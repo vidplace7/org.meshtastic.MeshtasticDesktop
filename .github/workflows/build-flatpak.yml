@@ -11,17 +11,16 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: true
-      - name: Install Flatpak
+      - name: Install Flatpak (apt)
         run: |
           sudo apt update
           sudo apt install -y flatpak
-          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-      - name: Install Flatpak Builder from FlatHub
-        run: |
-          flatpak install flathub -y org.flatpak.Builder
+      - name: Add FlatHub .flatpakrepo
+        run: flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - name: Install Flatpak Builder (FlatHub)
+        run: flatpak install flathub -y org.flatpak.Builder
       - name: Lint flatpak manifest
-        run: |
-          flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest org.meshtastic.MeshtasticDesktop.yaml
+        run: flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest org.meshtastic.MeshtasticDesktop.yaml
   build:
     needs:
       - lint
@@ -31,24 +30,31 @@ jobs:
         arch: [x86_64, aarch64]
       fail-fast: false
     steps:
-        - uses: actions/checkout@v7
-          with:
-            submodules: true
-        - name: Install Flatpak Builder
-          run: |
-            sudo apt update
-            sudo apt install -y flatpak-builder
-            flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-        - name: Build flatpak
-          run: |
-            flatpak-builder --user --repo=repo --install-deps-from=flathub --force-clean builddir org.meshtastic.MeshtasticDesktop.yaml
-        - name: Export .flatpak bundle
-          env:
-            ARCH: ${{ matrix.arch }}
-          run: |
-            flatpak build-bundle repo org.meshtastic.MeshtasticDesktop.${ARCH}.flatpak org.meshtastic.MeshtasticDesktop --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
-        - name: Upload .flatpak
-          uses: actions/upload-artifact@v7
-          with:
-            name: meshtastic-desktop-flatpak-${{ matrix.arch }}
-            path: org.meshtastic.MeshtasticDesktop.${{ matrix.arch }}.flatpak
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+      - name: Install Flatpak Builder (apt)
+        run: |
+          sudo apt update
+          sudo apt install -y flatpak-builder
+      - name: Add FlatHub .flatpakrepo
+        run: flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - name: Install Flatpak Builder (FlatHub)
+        run: flatpak install flathub -y org.flatpak.Builder
+      - name: Build flatpak
+        run: |
+          flatpak-builder --user --repo=repo --install-deps-from=flathub --force-clean builddir org.meshtastic.MeshtasticDesktop.yaml
+      - name: Lint flatpak repo
+        run: flatpak run --command=flatpak-builder-lint org.flatpak.Builder repo repo
+        continue-on-error: true  # Linting should not be fatal.
+      - name: Export .flatpak bundle
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: >
+          flatpak build-bundle repo org.meshtastic.MeshtasticDesktop.${ARCH}.flatpak org.meshtastic.MeshtasticDesktop
+          --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+      - name: Upload .flatpak
+        uses: actions/upload-artifact@v7
+        with:
+          name: meshtastic-desktop-flatpak-${{ matrix.arch }}
+          path: org.meshtastic.MeshtasticDesktop.${{ matrix.arch }}.flatpak
