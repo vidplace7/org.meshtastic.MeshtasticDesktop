@@ -72,7 +72,8 @@ modules:
       - install -Dm644 -t /app/share/applications desktopApp/packaging/linux/org.meshtastic.desktop.desktop
       - desktop-file-edit --set-key="Exec" --set-value="meshtastic-wrapper.sh %U"
         /app/share/applications/org.meshtastic.desktop.desktop
-      - install -Dm644 -t /app/share/metainfo desktopApp/packaging/linux/org.meshtastic.desktop.metainfo.xml
+      - install -Dm644 org.meshtastic.desktop.metainfo.xml /app/share/metainfo/org.meshtastic.desktop.metainfo.xml
+      # - install -Dm644 -t /app/share/metainfo desktopApp/packaging/linux/org.meshtastic.desktop.metainfo.xml
       # Disable Gradle's auto-download and auto-detect of Java installations
       - echo "org.gradle.java.installations.auto-detect=false" >> gradle.properties
       - echo "org.gradle.java.installations.auto-download=false" >> gradle.properties
@@ -89,6 +90,10 @@ modules:
         JAR_FILE=$(find desktopApp/build/compose/jars/ -name "*.jar" -type f | head -1)
         && install -Dm755 "$JAR_FILE" /app/lib/meshtastic-desktop.jar
     sources:
+      # Use the local metainfo.xml file for now. The file in-repo is incomplete at 2.7.14 tag.
+      # Remove this with >v2.8.0 release.
+      - type: file
+        path: org.meshtastic.desktop.metainfo.xml
       - type: git
         url: https://github.com/meshtastic/Meshtastic-Android.git
         tag: v2.7.14
