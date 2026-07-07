@@ -105,9 +105,6 @@ modules:
           timestamp-query: .published_at
           tag-query: .tag_name
           version-query: $tag | sub("^v"; "")
-      - type: patch
-        paths:
-          - patches/remove-toolchainManagement.patch
       - type: file
         url: https://services.gradle.org/distributions/gradle-9.5.1-all.zip
         sha256: c72fb9991f6025cbe337d52ba77e531b3faf62bdd3e348fe1ccee9f51c71adb0
