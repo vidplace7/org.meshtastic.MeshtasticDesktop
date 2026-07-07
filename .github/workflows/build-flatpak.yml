@@ -22,14 +22,14 @@ jobs:
         - name: Build flatpak
           run: |
             flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-            flatpak-builder --user --repo=repo --install-deps-from=flathub --force-clean builddir org.meshtastic.desktop.yaml
+            flatpak-builder --user --repo=repo --install-deps-from=flathub --force-clean builddir org.meshtastic.MeshtasticDesktop.yaml
         - name: Export .flatpak bundle
           env:
             ARCH: ${{ matrix.arch }}
           run: |
-            flatpak build-bundle repo org.meshtastic.desktop.${ARCH}.flatpak org.meshtastic.desktop --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+            flatpak build-bundle repo org.meshtastic.MeshtasticDesktop.${ARCH}.flatpak org.meshtastic.MeshtasticDesktop --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
         - name: Upload .flatpak
           uses: actions/upload-artifact@v7
           with:
             name: meshtastic-desktop-flatpak-${{ matrix.arch }}
-            path: org.meshtastic.desktop.${{ matrix.arch }}.flatpak
+            path: org.meshtastic.MeshtasticDesktop.${{ matrix.arch }}.flatpak
