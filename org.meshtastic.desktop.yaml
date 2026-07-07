@@ -3,7 +3,8 @@ runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  # OpenJDK 17 and 21 are required at build time.
+  # OpenJDK 17 is required at build time by the Meshtastic 'ATAK' module.
+  # This requirement is removed in v2.8.0 (JDK 21 only).
   - org.freedesktop.Sdk.Extension.openjdk17
   - org.freedesktop.Sdk.Extension.openjdk21
 command: meshtastic-wrapper.sh
@@ -59,9 +60,6 @@ modules:
     buildsystem: simple
     build-options:
       append-path: "/usr/lib/sdk/openjdk21/bin"
-      # build-args:
-      #   # Allow internet access at build time (Not allowed on FlatHub)
-      #   - --share=network
       env:
         JAVA_HOME: /usr/lib/sdk/openjdk21/jvm/openjdk-21
     build-commands:
@@ -90,10 +88,6 @@ modules:
         JAR_FILE=$(find desktopApp/build/compose/jars/ -name "*.jar" -type f | head -1)
         && install -Dm755 "$JAR_FILE" /app/lib/meshtastic-desktop.jar
     sources:
-      # Use the local metainfo.xml file for now. The file in-repo is incomplete at 2.7.14 tag.
-      # Remove this with >v2.8.0 release.
-      - type: file
-        path: org.meshtastic.desktop.metainfo.xml
       - type: git
         url: https://github.com/meshtastic/Meshtastic-Android.git
         tag: v2.7.14
@@ -117,3 +111,8 @@ modules:
           version-query: .version
           url-query: .downloadUrl
       - flatpak-sources.json
+      # Use the local metainfo.xml file for now.
+      # The file in-repo is incomplete (missing screenshots) at v2.7.14 tag.
+      # Fixed in v2.8.0 (remove during upgrade).
+      - type: file
+        path: org.meshtastic.desktop.metainfo.xml
