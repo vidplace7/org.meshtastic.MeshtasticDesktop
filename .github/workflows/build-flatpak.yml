@@ -22,8 +22,8 @@ jobs:
       - name: Lint flatpak manifest
         run: flatpak run --command=flatpak-builder-lint org.flatpak.Builder manifest org.meshtastic.MeshtasticDesktop.yaml
   build:
-    needs:
-      - lint
+    # needs:
+    #   - lint
     runs-on: ${{ matrix.arch == 'aarch64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     strategy:
       matrix:

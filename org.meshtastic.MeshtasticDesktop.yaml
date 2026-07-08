@@ -29,19 +29,37 @@ modules:
   - name: jbr
     buildsystem: simple
     build-commands:
-      - mkdir -p /app/jre
-      - tar xzf jbr-*.tar.gz -C /app/jre --strip-components=1
+      # Build JBR JDK
+      - >
+        bash configure
+        --with-boot-jdk=/usr/lib/sdk/openjdk21/jvm/openjdk-21
+        --with-zlib=system
+        --with-extra-cflags="${CFLAGS}"
+        --with-extra-cxxflags="${CXXFLAGS}"
+        --with-extra-ldflags="${LDFLAGS}"
+        --disable-warnings-as-errors
+      - make -j1 LOG=info images
+      - mkdir -p /app/jvm
+      - cp -Lr build/linux-*-server-release/images/jdk /app/jvm/jbr-21
+      # Install JBR JRE
+      - mkdir -p /app/jre/bin
+      - cp -ra /app/jvm/jbr-21/conf /app/jvm/jbr-21/lib /app/jvm/jbr-21/release /app/jre/
+      - rm /app/jre/lib/src.zip /app/jre/lib/ct.sym
+      - cp -ra /app/jvm/jbr-21/bin/{java,keytool,rmiregistry} /app/jre/bin
+    cleanup:
+      # We only need the JRE for runtime, so remove the JDK and other build artifacts to save space.
+      - /jvm/jbr-21
     sources:
-      - type: file
-        url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr-21.0.11-linux-x64-b1163.116.tar.gz
-        sha256: 72bf2d1830587a3cd31b718d4af9fc7a88fc6c3740642d842b3b378d4acbe476
-        only-arches:
-          - x86_64
-      - type: file
-        url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr-21.0.11-linux-aarch64-b1163.116.tar.gz
-        sha256: 02124d01591c173f9a51ef84d99ce248900d4d1e1aa52a38c65f4708f66b6e98
-        only-arches:
-          - aarch64
+      - type: git
+        url: https://github.com/JetBrains/JetBrainsRuntime.git
+        tag: jbr-release-21.0.11b1163.116
+        commit: cf1f197170a0f04c6559feb873e362583be021d1
+      # Patches from https://github.com/flathub/org.freedesktop.Sdk.Extension.openjdk21/tree/branch/25.08/patches
+      - type: patch
+        paths:
+          - patches/0001-Allow-ccache-to-be-handled-by-GCC-wrappers.patch
+          - patches/0002-FORBID_C_FUNCTION-needs-exception-spec-consistent-wi.patch
+          - patches/0003-Fix-missing-inline-includes-for-XList-and-ZList-dest.patch
 
   - name: meshtastic-desktop
     buildsystem: simple
